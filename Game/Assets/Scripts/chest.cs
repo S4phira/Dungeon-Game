@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class chest : Collectable {
+public class Chest : Collectable {
 
 	public Sprite emptyChest;
 	public int pesosAmout = 5;
@@ -11,7 +11,7 @@ public class chest : Collectable {
 		if(!collected) {
 			collected  = true;
 			GetComponent<SpriteRenderer>().sprite = emptyChest;
-			Debug.Log("Grant " + pesosAmout + " pesos");
+			GameManager.instance.ShowText("+" + pesosAmout + " pesos!", 25, Color.yellow, transform.position, Vector3.up *25, 1.5f);
 		}
 	}
 

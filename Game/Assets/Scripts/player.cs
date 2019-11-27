@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour {
+public class Player : MonoBehaviour {
 
 	private BoxCollider2D boxCollider;
 	private Vector3 moveDelta;
