@@ -48,6 +48,46 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+	public int GetCurrentLevel(){
+		int r=0;
+		int add=0;
+
+		while(experience >= add)
+		{
+			add+= xpTable[r];
+			r++;
+
+			if(r== xpTable.Count){
+				return r;
+			}	
+		}
+			
+		
+		return r;
+	}
+
+	public int GetXpToLevel(int level){
+		int r = 0;
+		int xp = 0;
+		while (r < level) {
+			xp+= xpTable[r];
+			r++;
+		}
+		return xp;
+	}
+	
+	public void GrantXp(int xp){
+		int currLevel = GetCurrentLevel();
+		experience +=xp;
+		if(currLevel < GetCurrentLevel()){
+			OnLevelUp();
+		}
+	}
+	public void OnLevelUp(){
+		player.OnLevelUp();
+	}
+	
+	
 	//Save state
 	public void SaveState(){
 		
@@ -71,6 +111,8 @@ public class GameManager : MonoBehaviour {
 
 		pesos = int.Parse(data[1]);
 		experience = int.Parse(data[2]);
+		if(GetCurrentLevel() !=1)
+			player.SetLevel(GetCurrentLevel());
 		weapon.SetWeaponLevel(int.Parse(data[3]));
 
 		Debug.Log("LoadState");

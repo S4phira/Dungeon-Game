@@ -34,6 +34,8 @@ public class CharacterMenu : MonoBehaviour {
 	}
 	private void OnSelectionChanged(){
 		characterSelectionSprite.sprite = GameManager.instance.playerSprites[curentCharacterSelection];
+		GameManager.instance.player.SwapSprite(curentCharacterSelection);
+	
 	}
 
 	//weapon upgrade
@@ -58,14 +60,28 @@ public class CharacterMenu : MonoBehaviour {
 		}
 		
 		//meta
-		levelText.text = "Not implemented";
+		levelText.text = GameManager.instance.GetCurrentLevel().ToString();
 		hitpointText.text = GameManager.instance.player.hitPoint.ToString();
 		pesosText.text = GameManager.instance.pesos.ToString();
 
 		//xp bar
-		xpText.text = "Not implemented";
-		xpBar.localScale = new Vector3(0.5f, 0, 0);
+		int currLevel = GameManager.instance.GetCurrentLevel();
+		if(currLevel  == GameManager.instance.xpTable.Count){
+			xpText.text = GameManager.instance.experience.ToString() + " total experince points";
+			xpBar.localScale = Vector3.one;
+		}
+		else{
+			int prevLevelXp = GameManager.instance.GetXpToLevel(currLevel - 1);
+			int currLevelXp = GameManager.instance.GetXpToLevel(currLevel);
 
+			int diff = currLevelXp - prevLevelXp;
+			int currXpIntoLevel = GameManager.instance.experience - prevLevelXp;
+
+			float completionRadio = (float)currXpIntoLevel / (float)diff;
+			xpBar.localScale = new Vector3(completionRadio, 1, 1);
+			xpText.text = currXpIntoLevel.ToString() + " / " + diff;
+		}
+	
 	}
 
 
