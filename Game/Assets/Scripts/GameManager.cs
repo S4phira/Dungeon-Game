@@ -5,32 +5,42 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 	public static GameManager instance;
-	private void Awake(){
+    private void Awake()
+    {
+		//PlayerPrefs.DeleteAll();
+        if (GameManager.instance != null)
+        {
+            Destroy(gameObject);
+            Destroy(player.gameObject);
+            Destroy(floatingTextManager.gameObject);
+            Destroy(hud);
+            Destroy(menu.gameObject);
+            return;
+        }
 
-		if (GameManager.instance != null) {
-			Destroy(gameObject);
-			Destroy(player.gameObject);
-			Destroy(floatingTextManager.gameObject);
-			return;
-		}
-		// PlayerPrefs.DeleteAll();
-		instance = this;
-		SceneManager.sceneLoaded +=LoadState;
-
-		DontDestroyOnLoad(gameObject);
-	}
+        instance = this;
+        SceneManager.sceneLoaded += LoadState;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 	//Resources
 	public List<Sprite> playerSprites;
 	public List<Sprite> weaponSprite;
 	public List<int> weaponPrices;
 	public List<int> xpTable;
 
-	//public Player player;
+
+	//references
 	public Player player;
 	public Weapon weapon;
 	public FloatingTextManager floatingTextManager;
+	public RectTransform hitpointBar;
+	public GameObject hud;
+	public CharacterMenu menu;
+
+
 	public int pesos;
 	public int experience;
+
 
 	//Floating text
 	public void ShowText(string msg, int fontSize, Color color, Vector3 position, Vector3 motion, float duration){
@@ -38,17 +48,28 @@ public class GameManager : MonoBehaviour {
 	}
 
 	//upgrade weapon
-	public bool TryUpgradeWeapon(){
-		if(weaponPrices.Count <= weapon.weaponLevel) return false;
+	public bool TryUpgradeWeapon()
+    {
+        // is the weapon max level?
+        if (weaponPrices.Count <= weapon.weaponLevel)
+            return false;
 
-		if(pesos >= weaponPrices[weapon.weaponLevel]){
-			pesos -=  weaponPrices[weapon.weaponLevel];
-			weapon.UpgradeWeapon();
-			return false;
+        if (pesos >= weaponPrices[weapon.weaponLevel])
+        {
+            pesos -= weaponPrices[weapon.weaponLevel];
+            weapon.UpgradeWeapon();
+            return true;
+        }
+
+        return false;
+    }
+
+		//Hitpoint Bar
+	public void OnHitpointChange(){
+			float ratio = (float)player.hitPoint / (float)player.maxHitpoint;
+			hitpointBar.localScale = new Vector3(1, ratio, 1);
+
 		}
-		return false;
-
-	}
 
 	public int GetCurrentLevel(){
 		int r=0;
@@ -89,6 +110,9 @@ public class GameManager : MonoBehaviour {
 		player.OnLevelUp();
 	}
 	
+	public void OnSceneLoaded( Scene s, LoadSceneMode mode){
+		player.transform.position = GameObject.Find("SpawnPoint").transform.position;
+	}
 	
 	//Save state
 	public void SaveState(){
@@ -106,6 +130,8 @@ public class GameManager : MonoBehaviour {
 	}
 	public void LoadState( Scene s, LoadSceneMode mode){
 
+		SceneManager.sceneLoaded -=LoadState;
+
 		if (!PlayerPrefs.HasKey("SaveState"))
         return;
 
@@ -117,8 +143,7 @@ public class GameManager : MonoBehaviour {
 			player.SetLevel(GetCurrentLevel());
 		weapon.SetWeaponLevel(int.Parse(data[3]));
 
-		player.transform.position = GameObject.Find("SpawnPoint").transform.position;
+		
 
-		Debug.Log("LoadState");
 	}
 }
