@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour {
 	public Weapon weapon;
 	public FloatingTextManager floatingTextManager;
 	public RectTransform hitpointBar;
+	public Animator deathMenuAnim;
 	public GameObject hud;
 	public CharacterMenu menu;
 
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour {
 
         return false;
     }
+
 
 		//Hitpoint Bar
 	public void OnHitpointChange(){
@@ -114,6 +116,15 @@ public class GameManager : MonoBehaviour {
 		player.transform.position = GameObject.Find("SpawnPoint").transform.position;
 	}
 	
+   // Death Menu and Respawn
+    public void Respawn()
+    {
+        deathMenuAnim.SetTrigger("hide");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        player.Respawn();
+    }
+
+
 	//Save state
 	public void SaveState(){
 		
