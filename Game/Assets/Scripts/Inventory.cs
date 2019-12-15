@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 public class Inventory : MonoBehaviour {
 
@@ -12,7 +14,10 @@ public class Inventory : MonoBehaviour {
 	public float slotSize;
 	public GameObject slotPrefab;
 
-	private List<GameObject> allSlots; // List of all the slots
+	public GameObject mana;
+	public GameObject health;
+
+	public List<GameObject> allSlots; // List of all the slots
 
 	private static int emptySlots;
 
@@ -21,21 +26,27 @@ public class Inventory : MonoBehaviour {
 		set { emptySlots = value; }
 	}
 
-
-
 	void Start () {
+		
 		CreateLayout();
+
 	}
 
 	private void CreateLayout() {
-		allSlots = new List<GameObject>();
 
+		if(allSlots!=null) {
+			foreach(GameObject go in allSlots)
+				Destroy(go);
+		}
+
+		allSlots = new List<GameObject>();
 		emptySlots = slots;
 
 		inventoryWidth = (slots / rows) * (slotSize + slotPaddingLeft) + slotPaddingLeft;
 		inventoryHight = rows * (slotSize + slotPaddingTop) + slotPaddingTop;
 
 		inventoryRect = GetComponent<RectTransform>();
+	
 
 		inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
 		inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHight);
@@ -98,6 +109,70 @@ public class Inventory : MonoBehaviour {
 			
 		}
 		return false;
+	}
+
+	public void LoadInventory() {
+
+		//load layout
+		slots = PlayerPrefs.GetInt("slots");
+		rows = PlayerPrefs.GetInt("rows");
+		slotPaddingLeft = PlayerPrefs.GetFloat("slotPaddingLeft");
+		slotPaddingTop = PlayerPrefs.GetFloat("slotPaddingTop");
+		slotSize = PlayerPrefs.GetFloat("slotSize");
+		inventoryRect = GetComponent<RectTransform>();
+		
+		
+		inventoryRect.anchoredPosition = new Vector3(0, 0, 0);
+
+		CreateLayout();
+
+
+		string[] dataInventory = PlayerPrefs.GetString("InventoryState").Split(';');
+		for ( int i = 0; i < dataInventory.Length-1; i++) {
+			string[] splitDataInventory = dataInventory[i].Split('|'); // 0-MANA-2	
+			int slotIndex = int.Parse(splitDataInventory[0]); // 0
+			ItemType type = (ItemType)Enum.Parse(typeof(ItemType), splitDataInventory[1]); //MANA
+			int slotStack = int.Parse (splitDataInventory[2]); //2
+
+			for (int j = 0; j < slotStack; j++ ) {
+				
+				switch(type) {
+					case ItemType.MANA:
+						allSlots[slotIndex].GetComponent<SlotScript>().AddItem(mana.GetComponent<Item>());
+						
+					break;
+
+					case ItemType.HEALTH:
+					allSlots[slotIndex].GetComponent<SlotScript>().AddItem(health.GetComponent<Item>());
+					break;
+				}
+			}
+		}
+		Debug.Log("Load Inventory");
+	}
+	public void SaveInventory() { 
+		//INVENTORY
+		string inventoryState = "";
+
+		for (int i = 0; i <allSlots.Count; i++) {
+			SlotScript currentSlot = allSlots[i].GetComponent<SlotScript>();
+			if (!currentSlot.IsEmpty) {
+				inventoryState += i + "|" +  currentSlot.CurrentItem.type.ToString() + "|"  + currentSlot.items.Count.ToString() + ";" ;
+			} 
+		}
+
+		
+		PlayerPrefs.SetInt("slots", slots);
+		PlayerPrefs.SetInt("rows", rows);
+		PlayerPrefs.SetFloat("slotPaddingLeft", slotPaddingLeft);
+		PlayerPrefs.SetFloat("slotPaddingTop", slotPaddingTop);
+		PlayerPrefs.SetFloat("slotSize", slotSize);
+		PlayerPrefs.SetFloat("xPos", inventoryRect.position.x);
+		PlayerPrefs.SetFloat("yPos", inventoryRect.position.y);
+
+		PlayerPrefs.SetString("InventoryState", inventoryState);
+		PlayerPrefs.Save();
+		Debug.Log("Save Inventory");
 	}
 
 

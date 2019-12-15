@@ -70,6 +70,7 @@ public class Player : Mover {
 	public void OnTriggerEnter2D(Collider2D other) {
        if (other.tag == "Item") {
 			inventory.AddItem(other.GetComponent<Item>());
+			Destroy(other.GetComponent<Item>());
 	   }
     }
 }

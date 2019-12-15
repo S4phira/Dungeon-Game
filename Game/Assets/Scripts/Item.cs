@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ItemType {MANA, HEALTH};
 
-public class Item : Collidable {
+public class Item : Collectable {
 	public Inventory inventory;
 	public ItemType type;
 

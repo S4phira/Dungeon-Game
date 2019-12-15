@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class SlotScript : MonoBehaviour, IPointerClickHandler {
 
-	private Stack<Item> items; // The items that the slot contains
+	public Stack<Item> items; // The items that the slot contains
 	public Text stackText; // Indicates the number of items stacked on the slot
 	public Sprite slotEmpty; // The slot's empty sprite
 	public Sprite slotHighlight; // The slot's highlighted sprite
