@@ -33,6 +33,7 @@ public class Enemy : Mover {
 
             if (chasing)
             {
+                animator.SetBool("chasing", true);
                 if (!collidingWithPlayer)
                 {
                     UpdateMotor((playerTransform.position - transform.position).normalized);

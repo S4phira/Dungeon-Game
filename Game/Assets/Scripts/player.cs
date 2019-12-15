@@ -6,12 +6,14 @@ public class Player : Mover {
 
 	private SpriteRenderer spriteRenderer;
 	private bool isAlive = true;
+	
 
 	public Inventory inventory;
 
 	protected override void Start() {
 		base.Start();
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		animator = GetComponent<Animator>();
 
 	}
 
@@ -70,7 +72,7 @@ public class Player : Mover {
 	public void OnTriggerEnter2D(Collider2D other) {
        if (other.tag == "Item") {
 			inventory.AddItem(other.GetComponent<Item>());
-			Destroy(other.GetComponent<Item>());
+			
 	   }
     }
 }

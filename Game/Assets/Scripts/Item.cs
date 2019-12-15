@@ -17,7 +17,10 @@ public class Item : Collectable {
 	//TODO: implement mana 
 	//public int manaRegenerationAmount = 10;
 
-
+	protected override void OnCollide(Collider2D coll) {
+		if (coll.name == "Player") 
+		Destroy(this.gameObject);
+	}
 	public void Use() {
 		switch(type) {
 			case ItemType.MANA:

@@ -50,6 +50,7 @@ public class SlotScript : MonoBehaviour, IPointerClickHandler {
  	// Adds a single item to inventory
 	public void AddItem(Item item) {
 		items.Push(item);
+		
 
 		if(items.Count > 1) {
 			stackText.text = items.Count.ToString();

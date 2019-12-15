@@ -9,13 +9,14 @@ public abstract class Mover : Fighter {
 	protected RaycastHit2D hit;
 	protected float ySpeed = 0.75f;
 	protected float xSpeed = 1.0f;
-
+	public Animator animator;
 
 	protected virtual void Start() {
 		boxCollider = GetComponent<BoxCollider2D>();
 	}
 	protected virtual void UpdateMotor(Vector3 input){
-
+		animator.SetFloat("speed_x", Mathf.Abs(Input.GetAxis("Horizontal")));
+		animator.SetFloat("speed_y", Mathf.Abs(Input.GetAxis("Vertical")));
 			//Reset moveDelta
 		moveDelta = new Vector3(input.x * xSpeed, input.y * ySpeed, 0);
 

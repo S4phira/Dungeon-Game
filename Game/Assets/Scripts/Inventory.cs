@@ -68,6 +68,8 @@ public class Inventory : MonoBehaviour {
 				slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize);
 
 				allSlots.Add(newSlot);
+				
+				newSlot.transform.SetParent(this.transform);
 			}
 		}
 	}
@@ -122,7 +124,7 @@ public class Inventory : MonoBehaviour {
 		inventoryRect = GetComponent<RectTransform>();
 		
 		
-		inventoryRect.anchoredPosition = new Vector3(0, 0, 0);
+        inventoryRect.position = new Vector3(PlayerPrefs.GetFloat("xPos"), PlayerPrefs.GetFloat("yPos"), 0);
 
 		CreateLayout();
 

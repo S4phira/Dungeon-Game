@@ -43,12 +43,14 @@ public class CharacterMenu : MonoBehaviour {
 		if(GameManager.instance.TryUpgradeWeapon())
 		UpdateMenu();
 	}
-
+	public void SaveMenu() {
+		///////
+		GameManager.instance.SaveState();
+	}
 	//update the character information
 	public void UpdateMenu(){
 
-		///////
-		GameManager.instance.SaveState();
+		
 		//weapon
 		weaponSprite.sprite = GameManager.instance.weaponSprite[GameManager.instance.weapon.weaponLevel];
 		
